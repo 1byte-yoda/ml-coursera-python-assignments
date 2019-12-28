@@ -5,6 +5,11 @@ from matplotlib import pyplot
 sys.path.append('..')
 from submission import SubmissionBase
 
+def updateGradient(X, y, theta, lambda_, alpha):
+    m = X.shape[0]
+    h = 1/(1 + np.exp(-X@theta))
+    dj_dtheta = alpha * (((1/m) * np.dot(X.T, h-y)) + ((lambda_/m)*theta))
+    return dj_dtheta
 
 def mapFeature(X1, X2, degree=6):
     """
@@ -45,7 +50,7 @@ def mapFeature(X1, X2, degree=6):
         return np.array(out)
 
 
-def plotDecisionBoundary(plotData, theta, X, y):
+def plotDecisionBoundary(ax, plotData, theta, X, y):
     """
     Plots the data points X and y into a new figure with the decision boundary defined by theta.
     Plots the data points with * for the positive examples and o for  the negative examples.
@@ -70,7 +75,7 @@ def plotDecisionBoundary(plotData, theta, X, y):
     theta = np.array(theta)
 
     # Plot Data (remember first column in X is the intercept)
-    plotData(X[:, 1:3], y)
+    plotData(ax, X[:, 1:3], y)
 
     if X.shape[1] <= 3:
         # Only need 2 points to define a line, so choose two endpoints
@@ -80,12 +85,12 @@ def plotDecisionBoundary(plotData, theta, X, y):
         plot_y = (-1. / theta[2]) * (theta[1] * plot_x + theta[0])
 
         # Plot, and adjust axes for better viewing
-        pyplot.plot(plot_x, plot_y)
+        ax.plot(plot_x, plot_y)
 
         # Legend, specific for the exercise
-        pyplot.legend(['Admitted', 'Not admitted', 'Decision Boundary'])
-        pyplot.xlim([30, 100])
-        pyplot.ylim([30, 100])
+        ax.legend(['Admitted', 'Not admitted', 'Decision Boundary'])
+        ax.set_xlim([30, 100])
+        ax.set_ylim([30, 100])
     else:
         # Here is the grid range
         u = np.linspace(-1, 1.5, 50)
@@ -101,8 +106,8 @@ def plotDecisionBoundary(plotData, theta, X, y):
         # print(z)
 
         # Plot z = 0
-        pyplot.contour(u, v, z, levels=[0], linewidths=2, colors='g')
-        pyplot.contourf(u, v, z, levels=[np.min(z), 0, np.max(z)], cmap='Greens', alpha=0.4)
+        ax.contour(u, v, z, levels=[0], linewidths=2, colors='g')
+        ax.contourf(u, v, z, levels=[np.min(z), 0, np.max(z)], cmap='Greens', alpha=0.4)
 
 
 class Grader(SubmissionBase):
