@@ -5,10 +5,18 @@ from matplotlib import pyplot
 sys.path.append('..')
 from submission import SubmissionBase
 
+def updateGradientReg(X, y, theta, lambda_, alpha):
+    m = X.shape[0]
+    h = 1/(1 + np.exp(-X@theta))
+    temp = theta
+    temp[0] = 0
+    grad = ((alpha/m) * np.dot(X.T, h-y)) + ((lambda_/m)*temp)
+    return grad
+
 def updateGradient(X, y, theta, lambda_, alpha):
     m = X.shape[0]
     h = 1/(1 + np.exp(-X@theta))
-    dj_dtheta = alpha * (((1/m) * np.dot(X.T, h-y)) + ((lambda_/m)*theta))
+    dj_dtheta = alpha * ((1/m) * np.dot(X.T, h-y))
     return dj_dtheta
 
 def mapFeature(X1, X2, degree=6):
